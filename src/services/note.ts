@@ -16,7 +16,7 @@ export class NoteService {
 
 	public getNoteFromLink(folder: TFolder, link: LinkCache) {
 
-		return this.app.vault.getFileByPath(`${folder.path}/${link.link}`);
+		return this.app.vault.getFileByPath(`${folder.path}/${link.link}.md`);
 
 	}
 
@@ -30,8 +30,13 @@ export class NoteService {
 			return [];
 		}
 
-		return links;
+		return links.filter(this.isNotInternalLink);
 
+	}
+
+	private isNotInternalLink(link: LinkCache) {
+		const regex = /^#/;
+		return !(regex.test(link.link))
 	}
 
 	public getTextFromNote(note: TFile): Promise<string> {
